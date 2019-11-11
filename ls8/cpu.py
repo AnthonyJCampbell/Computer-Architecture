@@ -56,8 +56,14 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         #elif op == "SUB": etc
+
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+            
         else:
             raise Exception("Unsupported ALU operation")
+
+
 
     def trace(self):
         """
@@ -79,13 +85,19 @@ class CPU:
 
         print()
 
+
+
     # sets a specified register to a specified value
     def ldi(self, reg_a, data):
         self.reg[reg_a] = data
 
+
+
     # Print the value at the designated register address
     def prn(self, reg):
         print(self.reg[reg])
+
+
 
     def run(self):
         """Run the CPU."""
@@ -101,18 +113,18 @@ class CPU:
             operand_b = self.ram_read(self.pc + 2)
 
             # `HLT`: halt the CPU and exit the emulator.
-            if IR == 1:
+            if IR == 0b00000001:
                 print("Closing run loop")
                 active = False
                 break
             
             # "PRN". `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
-            elif IR == 71:
+            elif IR == 0b01000111:
                 self.prn(operand_a)
                 self.pc += 2
 
             # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
-            elif IR == 130:
+            elif IR == 0b10000010:
                 # print(f"Storing {operand_b} in register[{operand_a}]")
                 self.ldi(operand_a, operand_b)
                 self.pc += 3
