@@ -32,6 +32,8 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
+        print(f"self.ram is loaded with instructions, it currently looks like: {self.ram}")
+
     # Returns the value found at the address in memory
     def ram_read(self, address):
         return self.ram[address]
@@ -68,18 +70,43 @@ class CPU:
 
         print()
 
+    # Exit the run() loop
+    def hlt(self):
+        pass
+
+    # sets a specified register to a specified value
+    def ldi(self, reg, data):
+        pass
+
+    # Print the value at the designated register address
+    def prn(self, reg):
+        pass
+
     def run(self):
         """Run the CPU."""
-        # This is essentially where we evaluate any incoming commands and do any required actions.
+        # We're extracting the instructions from RAM it seems
 
+        print("We are in the run loop")
         # We'll have to implement the operations first
 
-
+        active = True
+        while active is True:
+            pass
         # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
+            # Dec: 130
         # * `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
+            # Dec: 71
         # * `HLT`: halt the CPU and exit the emulator.
+            # exit the loop if a `HLT` instruction is encountered,regardless of whether or not there are more lines of code in the LS-8 program you loaded. 
+            # Dec: 1
 
+        # Read the memory address stored in reg[pc] & store it in Instruction Register (a local variable)
 
+        # Using `ram_read()`, read the bytes at `PC+1` and `PC+2` from RAM into variables `operand_a` and `operand_b` in case the instruction needs them.
+
+        # depending on the value of the opcode, perform the actions needed for the instruction per the LS-8 spec.
+
+        # After running code for any particular instruction, the `PC` needs to be updated to point to the next instruction for the next iteration of the loop in `run()`. The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode.
 
 
         pass

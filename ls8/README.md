@@ -64,11 +64,16 @@ but you'll have to implement those three above instructions first!
 ## Step 0: IMPORTANT: inventory what is here!
 
 * Make a list of files here.
-
+- CPU We parse instructions and store/mutate/return data here
+- ls8 is the computer itself, including the CPU. It gets started here.
+- /asm is our compiler to assembly code.
 
 * Write a short 3-10-word description of what each file does.
+
 * Note what has been implemented, and what hasn't.
+
 * Read this whole file.
+
 * Skim the spec.
 
 ## Step 1: Add the constructor to `cpu.py`
