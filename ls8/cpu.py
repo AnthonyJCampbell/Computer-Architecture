@@ -26,6 +26,13 @@ class CPU:
             0b01000111, # PRN R0
             0b00000000,
 
+            0b10000010, # LDI R0,12
+            0b00000001,
+            0b00001100,
+            0b01000111, # PRN R0
+            0b00000000,
+            0b01000111, # PRN R1
+            0b00000001,
             
             0b00000001, # HLT
         ]
@@ -75,11 +82,10 @@ class CPU:
     # sets a specified register to a specified value
     def ldi(self, reg_a, data):
         self.reg[reg_a] = data
-        print(self.reg)
 
     # Print the value at the designated register address
     def prn(self, reg):
-        print(self.reg[self.pc])
+        print(self.reg[reg])
 
     def run(self):
         """Run the CPU."""
@@ -87,60 +93,32 @@ class CPU:
 
         active = True
         # Initialize Instruction Register
-        IR = None
 
         while active is True:
             # Store address of data
-            IR = self.reg[self.pc]
+            IR = self.ram_read(self.pc)
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            # `HLT`: halt the CPU and exit the emulator.
+            if IR == 1:
+                print("Closing run loop")
+                active = False
+                break
             
-            for value in self.ram:
-                operand_a = self.ram_read(self.pc + 1)
-                operand_b = self.ram_read(self.pc + 2)
+            # "PRN". `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
+            elif IR == 71:
+                self.prn(operand_a)
+                self.pc += 2
 
+            # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
+            elif IR == 130:
+                # print(f"Storing {operand_b} in register[{operand_a}]")
+                self.ldi(operand_a, operand_b)
+                self.pc += 3
 
-                # "HLT". Halt loop immediately.
-                if value == 1:
-                    print("Closing run loop")
-                    active = False
-                    break
-                
-                # "PRN". Print passed in value
-                elif value == 71:
-                    self.prn(operand_a)
-                    self.pc += 1
-
-                # "LDI". Store a value in register. Passed in value and register
-                elif value == 130:
-                    # print(f"Storing {operand_b} in register[{operand_a}]")
-                    self.ldi(operand_a, operand_b)
-                    self.pc += 1
-
-                # print(self.pc)
-
-            break
-            # Pass over every instruction in self.ram (through `pc`?)
-
-            # Evaluate the value at self.ram[pc]
-
-            # elif chaning for every operation
-
-
-
-
-        # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
-            # Dec: 130
-        # * `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
-            # Dec: 71
-        # * `HLT`: halt the CPU and exit the emulator.
-            # exit the loop if a `HLT` instruction is encountered,regardless of whether or not there are more lines of code in the LS-8 program you loaded. 
-            # Dec: 1
-
-        # Read the memory address stored in reg[pc] & store it in Instruction Register (a local variable)
-
-        # Using `ram_read()`, read the bytes at `PC+1` and `PC+2` from RAM into variables `operand_a` and `operand_b` in case the instruction needs them.
-
-        # depending on the value of the opcode, perform the actions needed for the instruction per the LS-8 spec.
-
-        # After running code for any particular instruction, the `PC` needs to be updated to point to the next instruction for the next iteration of the loop in `run()`. The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode.
+            else:
+                print(f"Invalid instruction {IR}")
+                sys.exit(1)
 
 
