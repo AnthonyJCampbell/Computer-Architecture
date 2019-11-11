@@ -25,6 +25,8 @@ class CPU:
             0b00001000,
             0b01000111, # PRN R0
             0b00000000,
+
+            
             0b00000001, # HLT
         ]
 
@@ -32,7 +34,7 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
-        print(f"self.ram is loaded with instructions, it currently looks like: {self.ram}")
+        # print(f"self.ram is loaded with instructions, it currently looks like: {self.ram}")
 
     # Returns the value found at the address in memory
     def ram_read(self, address):
@@ -70,28 +72,61 @@ class CPU:
 
         print()
 
-    # Exit the run() loop
-    def hlt(self):
-        pass
-
     # sets a specified register to a specified value
-    def ldi(self, reg, data):
-        pass
+    def ldi(self, reg_a, data):
+        self.reg[reg_a] = data
+        print(self.reg)
 
     # Print the value at the designated register address
     def prn(self, reg):
-        pass
+        print(self.reg[self.pc])
 
     def run(self):
         """Run the CPU."""
         # We're extracting the instructions from RAM it seems
 
-        print("We are in the run loop")
-        # We'll have to implement the operations first
-
         active = True
+        # Initialize Instruction Register
+        IR = None
+
         while active is True:
-            pass
+            # Store address of data
+            IR = self.reg[self.pc]
+            
+            for value in self.ram:
+                operand_a = self.ram_read(self.pc + 1)
+                operand_b = self.ram_read(self.pc + 2)
+
+
+                # "HLT". Halt loop immediately.
+                if value == 1:
+                    print("Closing run loop")
+                    active = False
+                    break
+                
+                # "PRN". Print passed in value
+                elif value == 71:
+                    self.prn(operand_a)
+                    self.pc += 1
+
+                # "LDI". Store a value in register. Passed in value and register
+                elif value == 130:
+                    # print(f"Storing {operand_b} in register[{operand_a}]")
+                    self.ldi(operand_a, operand_b)
+                    self.pc += 1
+
+                # print(self.pc)
+
+            break
+            # Pass over every instruction in self.ram (through `pc`?)
+
+            # Evaluate the value at self.ram[pc]
+
+            # elif chaning for every operation
+
+
+
+
         # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
             # Dec: 130
         # * `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
@@ -109,4 +144,3 @@ class CPU:
         # After running code for any particular instruction, the `PC` needs to be updated to point to the next instruction for the next iteration of the loop in `run()`. The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode.
 
 
-        pass
