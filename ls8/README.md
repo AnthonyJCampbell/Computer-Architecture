@@ -19,7 +19,7 @@ then prints it out:
 
 ```
 # print8.ls8: Print the number 8 on the screen
-
+# Invoking print8.ls8 therefore automatically creates the following assembly code:
 10000010 # LDI R0,8
 00000000
 00001000
@@ -27,6 +27,8 @@ then prints it out:
 00000000
 00000001 # HLT
 ```
+
+>>> The invocation of the file specifies the method and parameters
 
 The binary numeric value on the left in the `print8.ls8` code above is either:
 
@@ -37,6 +39,8 @@ or
 
 * one of the opcode's arguments (e.g. `00000000` for `R0` or `00001000` for the
   value `8`), also known as the _operands_.
+
+>>> There's either instructions or parameters
 
 This code above requires the implementation of three instructions:
 
@@ -60,6 +64,8 @@ but you'll have to implement those three above instructions first!
 ## Step 0: IMPORTANT: inventory what is here!
 
 * Make a list of files here.
+
+
 * Write a short 3-10-word description of what each file does.
 * Note what has been implemented, and what hasn't.
 * Read this whole file.

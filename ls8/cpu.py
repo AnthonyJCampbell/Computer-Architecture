@@ -7,9 +7,9 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.registers = [0] * 8
-        self.memory = [0] * 256
-        self.PC = 0
+        self.reg = [0] * 8
+        self.ram = [0] * 256
+        self.pc = 0
 
     def load(self):
         """Load a program into memory."""
@@ -32,6 +32,12 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
+    # Returns the value found at the address in memory
+    def ram_read(self, address):
+        return self.ram[address]
+
+    def ram_write(self, address, data):
+        self.ram[address] = data
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -64,4 +70,16 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        # This is essentially where we evaluate any incoming commands and do any required actions.
+
+        # We'll have to implement the operations first
+
+
+        # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
+        # * `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
+        # * `HLT`: halt the CPU and exit the emulator.
+
+
+
+
         pass
