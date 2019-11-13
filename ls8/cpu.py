@@ -11,6 +11,9 @@ class CPU:
         self.ram = [0] * 256
         self.pc = 0
 
+        self.branchtable = {}
+        self.branchtable[0b01000111] = self.prn # 71 - Print
+
     def load(self, program):
         """Load a program into memory."""
 
@@ -78,8 +81,6 @@ class CPU:
     def prn(self, reg):
         print(self.reg[reg])
 
-
-
     def run(self):
         """Run the CPU."""
         # We're extracting the instructions from RAM it seems
@@ -101,7 +102,7 @@ class CPU:
             
             # "PRN". `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
             elif IR == 0b01000111:
-                self.prn(operand_a)
+                self.branchtable[IR](operand_a)
                 self.pc += 2
 
             elif IR == 0b10100010:
