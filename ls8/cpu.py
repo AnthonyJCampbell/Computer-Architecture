@@ -104,6 +104,10 @@ class CPU:
                 self.prn(operand_a)
                 self.pc += 2
 
+            elif IR == 0b10100010:
+                self.alu("MUL", operand_a, operand_b)
+                self.pc += 3
+
             # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
             elif IR == 0b10000010:
                 # print(f"Storing {operand_b} in register[{operand_a}]")
