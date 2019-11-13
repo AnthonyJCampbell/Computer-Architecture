@@ -7,29 +7,32 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.reg = [0] * 8
+        self.ram = [0] * 256
+        self.pc = 0
 
-    def load(self):
+        self.branchtable = {}
+        self.branchtable[0b01000111] = self.prn # 71 - Print
+
+    def load(self, program):
         """Load a program into memory."""
 
         address = 0
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
-
         for instruction in program:
             self.ram[address] = instruction
             address += 1
 
+        # print(f"self.ram is loaded with instructions, it currently looks like: {self.ram}")
+
+    # Returns the value found at the address in memory
+    def ram_read(self, address):
+        return self.ram[address]
+
+    def ram_write(self, address, data):
+        self.ram[address] = data
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -37,8 +40,14 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         #elif op == "SUB": etc
+
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+            
         else:
             raise Exception("Unsupported ALU operation")
+
+
 
     def trace(self):
         """
@@ -60,6 +69,54 @@ class CPU:
 
         print()
 
+
+
+    # sets a specified register to a specified value
+    def ldi(self, reg_a, data):
+        self.reg[reg_a] = data
+
+
+
+    # Print the value at the designated register address
+    def prn(self, reg):
+        print(self.reg[reg])
+
     def run(self):
         """Run the CPU."""
-        pass
+        # We're extracting the instructions from RAM it seems
+
+        active = True
+        # Initialize Instruction Register
+
+        while active is True:
+            # Store address of data
+            IR = self.ram_read(self.pc)
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            # `HLT`: halt the CPU and exit the emulator.
+            if IR == 0b00000001:
+                print("Closing run loop")
+                active = False
+                break
+            
+            # "PRN". `PRN`: a pseudo-instruction that prints the numeric value stored in a register.
+            elif IR == 0b01000111:
+                self.branchtable[IR](operand_a)
+                self.pc += 2
+
+            elif IR == 0b10100010:
+                self.alu("MUL", operand_a, operand_b)
+                self.pc += 3
+
+            # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
+            elif IR == 0b10000010:
+                # print(f"Storing {operand_b} in register[{operand_a}]")
+                self.ldi(operand_a, operand_b)
+                self.pc += 3
+
+            else:
+                print(f"Invalid instruction {IR}")
+                sys.exit(1)
+
+
