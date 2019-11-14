@@ -12,6 +12,10 @@ class CPU:
 
         self.branchtable = {}
         self.branch_operations()
+        # Initialize stack pointer
+        self.stack_pointer = 0xFF
+
+
 
     def load(self, program):
         address = 0
@@ -34,17 +38,38 @@ class CPU:
     def PRN(self, a, b):
         print(self.reg[a])
         self.pc += 2
-
+    
+    ##### ALU OPERATIONS #####
+    # Multiply value a with b at location of reg[a]
     def MUL(self, a, b):
         self.alu("MUL", a, b)
         self.pc += 3
 
+    ##### STACK OPERATIONS #####
+    def STACK_POP(self, a, b):
+        stack_value = self.ram[self.stack_pointer]
+        self.reg[a] = stack_value
+        # We cannot move past the top of the stack, so once we reach 0xFF, we shouldn't increase the pointer
+        if self.stack_pointer != 0xFF:
+            self.stack_pointer += 1
+        self.pc += 2
+
+    def STACK_PUSH(self, a, b):
+        # get value from register
+        val = self.reg[a]
+        # Insert value onto stack
+        self.ram_write(self.stack_pointer, val)
+        # Move stack pointer down
+        self.stack_pointer -= 1
+        self.pc += 2
+
+    # Populate branchtable
     def branch_operations(self):
         self.branchtable[0b10000010] = self.LDI
         self.branchtable[0b01000111] = self.PRN
         self.branchtable[0b10100010] = self.MUL
-
-
+        self.branchtable[0b01000110] = self.STACK_POP
+        self.branchtable[0b01000101] = self.STACK_PUSH
 
 
     # Returns the value found at the address in memory
@@ -99,7 +124,7 @@ class CPU:
         active = True
         # Initialize Instruction Register
 
-        while active is True:
+        while active:
             # Store address of data
             IR = self.ram_read(self.pc)
             operand_a = self.ram_read(self.pc + 1)
