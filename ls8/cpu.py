@@ -56,12 +56,12 @@ class CPU:
         self.pc += 2
 
     def STACK_PUSH(self, a, b):
+        # Move stack pointer down
+        self.stack_pointer -= 1
         # get value from register
         val = self.reg[a]
         # Insert value onto stack
         self.ram_write(self.stack_pointer, val)
-        # Move stack pointer down
-        self.stack_pointer -= 1
         self.pc += 2
 
     # Populate branchtable
@@ -132,9 +132,9 @@ class CPU:
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
-            print(f"IR: {IR}")
-            print(f"A: {operand_a}")
-            print(f"B: {operand_b}")
+            # print(f"IR: {IR}")
+            # print(f"A: {operand_a}")
+            # print(f"B: {operand_b}")
 
             # `HLT`: halt the CPU and exit the emulator.
             if IR == 0b00000001:
@@ -147,6 +147,5 @@ class CPU:
                 sys.exit(1)
 
             else:
-                print(operand_b)
                 self.branchtable[IR](operand_a, operand_b)
 
