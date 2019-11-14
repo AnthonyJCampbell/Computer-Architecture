@@ -353,7 +353,7 @@ and `RET`.
 
 If you run `python3 ls8.py examples/call.ls8` you should see the output:
 
-```
+``` 
 20
 30
 36
