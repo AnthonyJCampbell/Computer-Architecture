@@ -64,6 +64,22 @@ class CPU:
         self.ram_write(self.stack_pointer, val)
         self.pc += 2
 
+    def CALL(self, a, b):
+        # store return address (self.pc + 2) in stack (return address is the next instruction address)
+        self.stack_pointer -= 1
+        return_address = self.pc + 2
+        self.ram_write(self.stack_pointer, return_address)
+
+        # then move the pc to the subroutine address
+        self.pc = self.reg[a]
+
+
+    def RET(self, a, b):
+        # pop return value from the stack and store it in self.pc
+        stack_value = self.ram[self.stack_pointer]
+        # so next cycle will go from there
+        self.pc = stack_value
+
     # Populate branchtable
     def branch_operations(self):
         self.branchtable[0b10000010] = self.LDI
@@ -71,6 +87,8 @@ class CPU:
         self.branchtable[0b10100010] = self.MUL
         self.branchtable[0b01000110] = self.STACK_POP
         self.branchtable[0b01000101] = self.STACK_PUSH
+        self.branchtable[0b01010000] = self.CALL
+        self.branchtable[0b00010001] = self.RET
 
 
 
