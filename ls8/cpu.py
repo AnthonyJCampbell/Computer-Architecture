@@ -13,7 +13,7 @@ class CPU:
         self.branchtable = {}
         self.branch_operations()
         # Initialize stack pointer
-        self.stack_pointer = 0xFF
+        self.stack_pointer = 0xF3
 
 
 
@@ -31,6 +31,7 @@ class CPU:
     #############
     # * `LDI`: load "immediate", store a value in a register, or "set this register to this value".
     def LDI(self, a, b):
+
         self.reg[a] = b
         self.pc += 3
 
@@ -70,6 +71,7 @@ class CPU:
         self.branchtable[0b10100010] = self.MUL
         self.branchtable[0b01000110] = self.STACK_POP
         self.branchtable[0b01000101] = self.STACK_PUSH
+
 
 
     # Returns the value found at the address in memory
@@ -130,6 +132,10 @@ class CPU:
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
+            print(f"IR: {IR}")
+            print(f"A: {operand_a}")
+            print(f"B: {operand_b}")
+
             # `HLT`: halt the CPU and exit the emulator.
             if IR == 0b00000001:
                 print("Closing run loop")
@@ -141,5 +147,6 @@ class CPU:
                 sys.exit(1)
 
             else:
+                print(operand_b)
                 self.branchtable[IR](operand_a, operand_b)
 
