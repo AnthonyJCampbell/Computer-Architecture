@@ -41,6 +41,9 @@ class CPU:
         self.pc += 2
     
     ##### ALU OPERATIONS #####
+    def ADD(self, op_a, op_b):
+        self.alu("ADD", op_a, op_b)
+        self.pc += 3
     # Multiply value a with b at location of reg[a]
     def MUL(self, a, b):
         self.alu("MUL", a, b)
@@ -84,9 +87,13 @@ class CPU:
     def branch_operations(self):
         self.branchtable[0b10000010] = self.LDI
         self.branchtable[0b01000111] = self.PRN
+
         self.branchtable[0b10100010] = self.MUL
+        self.branchtable[0b10100000] = self.ADD
+
         self.branchtable[0b01000110] = self.STACK_POP
         self.branchtable[0b01000101] = self.STACK_PUSH
+
         self.branchtable[0b01010000] = self.CALL
         self.branchtable[0b00010001] = self.RET
 
